@@ -12,13 +12,21 @@ import GameplayKit
 class GameScene: SKScene {
     private let kAnimalNodeName = "movable"
     //bitmasks
-    let mainCategory:UInt32 = 0x1 << 0 //1
-    let ballCategory:UInt32 = 0x1 << 1        //2
+    let mainCategory:UInt32   = 0x00000001
+    let ballCategory:UInt32   = 0x00000002
+    let enemyCategory:UInt32  = 0x00000003
+    let plank1Category:UInt32 = 0x00000004
+    let plank2Category:UInt32 = 0x00000005
+    
     //
     
     var ball = SKSpriteNode()
     var enemy = SKSpriteNode()
     var main = SKSpriteNode()
+    var plank1 = SKSpriteNode()
+    var plank2 = SKSpriteNode()
+    var finish = SKSpriteNode()
+    var touchingNode = String()
     
     var topLbl = SKLabelNode()
     var btmLbl = SKLabelNode()
@@ -36,7 +44,9 @@ class GameScene: SKScene {
         rotateRec.addTarget(self, action: #selector(GameScene.rotatedView(_:)))
         self.view!.addGestureRecognizer(rotateRec)
         
+        let vector =  CGVector(dx: 0, dy: 0)
         //
+        self.physicsWorld.gravity = vector
         
         ball = self.childNode(withName: "ball") as! SKSpriteNode
         
@@ -48,6 +58,10 @@ class GameScene: SKScene {
         main = self.childNode(withName: "main") as! SKSpriteNode
         main.position.y = (-self.frame.height / 2) + 50
         
+        plank1 = self.childNode(withName: "plank1") as! SKSpriteNode
+        plank2 = self.childNode(withName: "plank2") as! SKSpriteNode
+        finish = self.childNode(withName: "finish") as! SKSpriteNode
+        
         let border  = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         border.friction = 0
@@ -58,7 +72,15 @@ class GameScene: SKScene {
         startGame()
         //bitmasks
         main.physicsBody?.categoryBitMask = mainCategory
+        enemy.physicsBody?.categoryBitMask = enemyCategory
+        plank1.physicsBody?.categoryBitMask = plank1Category
+        plank2.physicsBody?.categoryBitMask = plank2Category
+        
         ball.physicsBody?.collisionBitMask = mainCategory
+        ball.physicsBody?.collisionBitMask = enemyCategory
+        ball.physicsBody?.collisionBitMask = plank1Category
+        ball.physicsBody?.collisionBitMask = plank2Category
+        
         //
     }
     func createSprites() {
@@ -72,9 +94,15 @@ class GameScene: SKScene {
         }
         if (sender.state == .changed){
             print("we rotated")
-            theRotation = CGFloat(sender.rotation) + self.offset  
+            theRotation = CGFloat(sender.rotation) + self.offset
             theRotation = theRotation * -1
-            main.zRotation = theRotation
+            if touchingNode == "main" {
+                main.zRotation = theRotation
+            }else if touchingNode == "enemy" {
+                enemy.zRotation = theRotation
+            }
+            
+            
         }
         if (sender.state == .ended){
             print("we ended")
@@ -83,23 +111,6 @@ class GameScene: SKScene {
     }
     //
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-        
-        
-        switch currentGameType {
-        case .easy:
-            enemy.run(SKAction.moveTo(x: ball.position.x, duration: 1.3))
-            break
-        case .medium:
-            enemy.run(SKAction.moveTo(x: ball.position.x, duration: 1.0))
-            break
-        case .hard:
-            enemy.run(SKAction.moveTo(x: ball.position.x, duration: 0.7))
-            break
-        case .player2:
-            
-            break
-        }
         
         
         
@@ -113,20 +124,19 @@ class GameScene: SKScene {
     func startGame() {
         score = [0,0]
         
-        main.zRotation = 2
+         main.zRotation = 0
         //ball.physicsBody?.applyImpulse(CGVector(dx: 10 , dy: 10))
         
     }
     
     func addScore(playerWhoWon : SKSpriteNode){
         
-        ball.position = CGPoint(x: 0, y: 0)
+      //  ball.position = CGPoint(x: 0, y: 0)
         ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         
        
         
-        topLbl.text = "\(score[1])"
-        btmLbl.text = "\(score[0])"
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -150,8 +160,23 @@ class GameScene: SKScene {
             {
                 if name == "main"
                 {
+                    touchingNode = "main"
                     main.run(SKAction.moveTo(x: location.x, duration: 0.0))
                     main.run(SKAction.moveTo(y: location.y, duration: 0.0))
+                }
+                if name == "enemy"
+                {
+                    touchingNode = "enemy"
+                    enemy.run(SKAction.moveTo(x: location.x, duration: 0.0))
+                    enemy.run(SKAction.moveTo(y: location.y, duration: 0.0))
+                }
+                if name == "finish"
+                {
+                    let vector =  CGVector(dx: 0, dy: -1)
+                    //
+                    self.physicsWorld.gravity = vector
+                    print("touched")
+                    
                 }
                 
             }
