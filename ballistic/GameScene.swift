@@ -30,6 +30,7 @@ class GameScene: SKScene {
     var plank2 = SKSpriteNode()
     var finish = SKSpriteNode()
     var stop = SKSpriteNode()
+    var rotate = SKSpriteNode()
     
     var touchingNode = String()
     var touched = true
@@ -76,6 +77,7 @@ class GameScene: SKScene {
         plank2 = self.childNode(withName: "plank2") as! SKSpriteNode
         finish = self.childNode(withName: "finish") as! SKSpriteNode
         stop = self.childNode(withName: "stop") as! SKSpriteNode
+        rotate = self.childNode(withName: "rotate") as! SKSpriteNode
         
         
         let border  = SKPhysicsBody(edgeLoopFrom: self.frame)
@@ -123,25 +125,25 @@ class GameScene: SKScene {
         touchedSprite = false
         
         
-//        if (sender.state == .began){
-//            print("we began")
-//        }
-//        if (sender.state == .changed){
-//            print("we rotated")
-//            theRotation = CGFloat(sender.rotation) + self.offset
-//            theRotation = theRotation * -1
-//            if touchingNode == "main" {
-//                main.zRotation = theRotation
-//            }else if touchingNode == "enemy" {
-//                enemy.zRotation = theRotation
-//            }
-//
-//
-//        }
-//        if (sender.state == .ended){
-//            print("we ended")
-//            self.offset = theRotation * -1
-//        }
+        if (sender.state == .began){
+            print("we began")
+        }
+        if (sender.state == .changed){
+            print("we rotated")
+            theRotation = CGFloat(sender.rotation) + self.offset
+            theRotation = theRotation * -1
+            if touchingNode == "main" {
+                main.zRotation = theRotation
+            }else if touchingNode == "enemy" {
+                enemy.zRotation = theRotation
+            }
+
+
+        }
+        if (sender.state == .ended){
+            print("we ended")
+            self.offset = theRotation * -1
+        }
     }
     //
     override func update(_ currentTime: TimeInterval) {
@@ -151,7 +153,8 @@ class GameScene: SKScene {
      if ball.position.y <= -160 {
         resetBlocks()
      }
-        
+    
+        rotate.position = CGPoint(x:main.position.x+108, y:main.position.y)
 
     }
     func moveNodeToLocation() {
@@ -166,6 +169,7 @@ class GameScene: SKScene {
             dx = dx * speed
             dy = dy * speed
             main.position = CGPoint(x:main.position.x+dx, y:main.position.y+dy)
+            
             
         }else if touchingNode == "enemy" {
             // Compute vector components in direction of the touch
@@ -239,11 +243,24 @@ class GameScene: SKScene {
         
     }
     
+    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+
+        
+        
+        
         touchedSprite = true
         for touch in touches {
             location = touch.location(in:self)
+            
+           
+            
+            
+            
         }
+        
         
         for touch in touches {
             
@@ -283,6 +300,7 @@ class GameScene: SKScene {
         
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchedSprite = true
         for touch in touches {
             location = touch.location(in: self)
         }
