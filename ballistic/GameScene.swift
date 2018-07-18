@@ -12,12 +12,17 @@ import GameplayKit
 class GameScene: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
     //bitmasks
-    let mainCategory:UInt32   = 0x00000001
-    let ballCategory:UInt32   = 0x00000002
+    
+//    let ballCategory:UInt32   = 0x00000001
+//    let goalCategory:UInt32 = 0x00000002
+    
     let enemyCategory:UInt32  = 0x00000003
     let plank1Category:UInt32 = 0x00000004
     let plank2Category:UInt32 = 0x00000005
-    let goalCategory:UInt32   = 0x00000006
+    let mainCategory:UInt32   = 0x00000006
+    
+    
+    
     var location = CGPoint.zero
     
     var touchedSprite:Bool = false
@@ -33,6 +38,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var stop = SKSpriteNode()
     var goal = SKSpriteNode()
     
+    let winner = SKLabelNode()
     
     var touchingNode = String()
     var touched = true
@@ -51,7 +57,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
 
 
+        winner.fontSize = 65
+        winner.fontColor = SKColor.green
+        winner.position = CGPoint(x: frame.midX, y: frame.midY)
         
+        addChild(winner)
         
         self.view?.isMultipleTouchEnabled = false
         createSprites()
@@ -101,15 +111,19 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         enemy.physicsBody?.categoryBitMask = enemyCategory
         plank1.physicsBody?.categoryBitMask = plank1Category
         plank2.physicsBody?.categoryBitMask = plank2Category
-        goal.physicsBody?.categoryBitMask = goalCategory
+        
         
         ball.physicsBody?.collisionBitMask = mainCategory
         ball.physicsBody?.collisionBitMask = enemyCategory
         ball.physicsBody?.collisionBitMask = plank1Category
         ball.physicsBody?.collisionBitMask = plank2Category
         
+        
         main.physicsBody?.collisionBitMask = plank1Category
         enemy.physicsBody?.collisionBitMask = plank2Category
+        
+        //physicsBody?.contactTestBitMask = goalCategory
+  
         
         
         
@@ -122,17 +136,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         //
     }
     
-    func setGravity(){
-        
-        //ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
-        //ball.physicsBody!.affectedByGravity = false
-
-    
-    }
-    func createSprites() {
-        
-        
-    }
+   
     //rotate
     
     @objc func rotatedView(_ sender:UIRotationGestureRecognizer){
@@ -172,16 +176,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
 
     }
-    func didBeginContact(contact: SKPhysicsContact) {
-        print("contact")
-        if contact.bodyA.node == goal || contact.bodyB.node == goal {
-             print("contact2 ")
+    func didBegin(_ contact: SKPhysicsContact) {
+        let contactA:SKPhysicsBody = contact.bodyA
+        let contactB:SKPhysicsBody = contact.bodyB
+        
+        if contactA.categoryBitMask == 2 || contactB.categoryBitMask == 2 {
+            self.winner.text = "You Win!"
         }
     }
     func moveNodeToLocation() {
         if touchingNode == "main" {
-            
-            // Compute vector components in direction of the touch
             var dx = location.x - main.position.x
             var dy = location.y - main.position.y
             // How fast to move the node. Adjust this as needed
@@ -190,8 +194,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             dx = dx * speed
             dy = dy * speed
             main.position = CGPoint(x:main.position.x+dx, y:main.position.y+dy)
-            
-            
+        
         }else if touchingNode == "enemy" {
             // Compute vector components in direction of the touch
             var dx = location.x - enemy.position.x
@@ -207,9 +210,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     }
     func resetBlocks() {
-       
-            //addScore(playerWhoWon: enemy)
-            //ball.physicsBody!.affectedByGravity = false
+            self.winner.text = ""
+
             ball.physicsBody?.affectedByGravity = false
             main.physicsBody?.affectedByGravity = false
             enemy.physicsBody?.affectedByGravity = false
@@ -253,33 +255,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         //ball.physicsBody?.applyImpulse(CGVector(dx: 10 , dy: 10))
         
     }
-    
-    func addScore(playerWhoWon : SKSpriteNode){
-        
-      //  ball.position = CGPoint(x: 0, y: 0)
-        //ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        
-       
-        
-        
-    }
-    
-    
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-
-        
-        
         
         touchedSprite = true
         for touch in touches {
             location = touch.location(in:self)
-            
-           
-            
-            
-            
         }
         
         
@@ -299,14 +280,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     
                 } else if name == "finish" {
                     touchingNode = ""
-                    let vector =  CGVector(dx: 0, dy: -1)
-                    
-                    //
                     if touched {
-
-                        //self.physicsWorld.gravity = vector
                         physicsWorld.gravity = CGVector(dx: 0, dy: -3.8)
-                        //ball.physicsBody!.affectedByGravity = true
+                        
 
                         ball.physicsBody?.affectedByGravity = true
                         main.physicsBody?.affectedByGravity = true
@@ -329,17 +305,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 }
                 
             }
-            
-            
-            
-            
         }
-
-        
-        
-
-        
-        
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchedSprite = true
@@ -347,79 +313,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             location = touch.location(in: self)
         }
         
-//        for touch in touches {
-//            let location = touch.location(in: self)
-//            let positionInScene = touch.location(in: self)
-//            let touchedNode = self.atPoint(positionInScene)
-//
-//            if let name = touchedNode.name
-//            {
-//                if name == "main"
-//                {
-//                    touchingNode = "main"
-//                    main.position.x = (location.x)
-//                    main.position.y = (location.y)
-////                    main.run(SKAction.moveTo(x: location.x, duration: 0.0))
-////                    main.run(SKAction.moveTo(y: location.y, duration: 0.0))
-//                }
-//                if name == "enemy"
-//                {
-//                    touchingNode = "enemy"
-//                    enemy.position.x = (location.x)
-//                    enemy.position.y = (location.y)
-////                    enemy.run(SKAction.moveTo(x: location.x, duration: 0.0))
-////                    enemy.run(SKAction.moveTo(y: location.y, duration: 0.0))
-//                }
-//
-//                if name == "finish"
-//                {
-//                    //let vector =  CGVector(dx: 0, dy: -1)
-//
-//                    //
-//                    if touched {
-//
-//                        //self.physicsWorld.gravity = vector
-//                        physicsWorld.gravity = CGVector(dx: 0, dy: -3.8)
-//                        //ball.physicsBody!.affectedByGravity = true
-//
-//                        ball.physicsBody?.affectedByGravity = true
-//                        main.physicsBody?.affectedByGravity = true
-//                        enemy.physicsBody?.affectedByGravity = true
-//
-//                        ball.physicsBody?.pinned = false
-//                        main.physicsBody?.pinned = false
-//                        enemy.physicsBody?.pinned = false
-//
-//                        print("dr phil ")
-//
-//                        touched = false
-//
-//
-//                    }
-//
-//
-//
-//
-//
-//
-//                }
-//                if name == "stop"{
-//                    resetBlocks()
-//                }
-//
-//            }
-//
-//
-//
-//
-//        }
+
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchedSprite = false
         touchingNode = ""
     }
     
-    }
+}
 
 
 
