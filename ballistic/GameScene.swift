@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
     //bitmasks
     let mainCategory:UInt32   = 0x00000001
@@ -17,6 +17,7 @@ class GameScene: SKScene {
     let enemyCategory:UInt32  = 0x00000003
     let plank1Category:UInt32 = 0x00000004
     let plank2Category:UInt32 = 0x00000005
+    let goalCategory:UInt32   = 0x00000006
     var location = CGPoint.zero
     
     var touchedSprite:Bool = false
@@ -30,7 +31,8 @@ class GameScene: SKScene {
     var plank2 = SKSpriteNode()
     var finish = SKSpriteNode()
     var stop = SKSpriteNode()
-    var rotate = SKSpriteNode()
+    var goal = SKSpriteNode()
+    
     
     var touchingNode = String()
     var touched = true
@@ -46,7 +48,12 @@ class GameScene: SKScene {
     
     
     override func didMove(to view: SKView) {
+        self.physicsWorld.contactDelegate = self
+
+
         
+        
+        self.view?.isMultipleTouchEnabled = false
         createSprites()
         setGravity()
         //rotate
@@ -63,13 +70,13 @@ class GameScene: SKScene {
         ball.physicsBody?.pinned = true
         
         
-        print(self.view?.bounds.height as Any)
+        
         
         enemy = self.childNode(withName: "enemy") as! SKSpriteNode
         main = self.childNode(withName: "main") as! SKSpriteNode
         
-        enemy.position.y = (self.frame.height / 2) - 80
-        enemy.position.x = (self.frame.width / 4) - 320
+        enemy.position.y = (self.frame.height / 2) - 40
+        enemy.position.x = (self.frame.width / 4) - 390
         main.position.y = (self.frame.height / 2) - 40
         main.position.x = (self.frame.width / 3) - 200
         
@@ -77,7 +84,8 @@ class GameScene: SKScene {
         plank2 = self.childNode(withName: "plank2") as! SKSpriteNode
         finish = self.childNode(withName: "finish") as! SKSpriteNode
         stop = self.childNode(withName: "stop") as! SKSpriteNode
-        rotate = self.childNode(withName: "rotate") as! SKSpriteNode
+        goal = self.childNode(withName: "goal") as! SKSpriteNode
+        
         
         
         let border  = SKPhysicsBody(edgeLoopFrom: self.frame)
@@ -93,6 +101,7 @@ class GameScene: SKScene {
         enemy.physicsBody?.categoryBitMask = enemyCategory
         plank1.physicsBody?.categoryBitMask = plank1Category
         plank2.physicsBody?.categoryBitMask = plank2Category
+        goal.physicsBody?.categoryBitMask = goalCategory
         
         ball.physicsBody?.collisionBitMask = mainCategory
         ball.physicsBody?.collisionBitMask = enemyCategory
@@ -104,10 +113,15 @@ class GameScene: SKScene {
         
         
         
+        let mask1 = 0x000000FF
+        let mask2 = 0x000000F0
+        
+        let result = mask1 & mask2 // result = 0x000000F0
         
         
         //
     }
+    
     func setGravity(){
         
         //ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
@@ -126,10 +140,10 @@ class GameScene: SKScene {
         
         
         if (sender.state == .began){
-            print("we began")
+            
         }
         if (sender.state == .changed){
-            print("we rotated")
+            
             theRotation = CGFloat(sender.rotation) + self.offset
             theRotation = theRotation * -1
             if touchingNode == "main" {
@@ -141,12 +155,13 @@ class GameScene: SKScene {
 
         }
         if (sender.state == .ended){
-            print("we ended")
+            
             self.offset = theRotation * -1
         }
     }
     //
     override func update(_ currentTime: TimeInterval) {
+    
     if (touchedSprite) {
         moveNodeToLocation()
     }
@@ -154,12 +169,18 @@ class GameScene: SKScene {
         resetBlocks()
      }
     
-        rotate.position = CGPoint(x:main.position.x+108, y:main.position.y)
+        
 
+    }
+    func didBeginContact(contact: SKPhysicsContact) {
+        print("contact")
+        if contact.bodyA.node == goal || contact.bodyB.node == goal {
+             print("contact2 ")
+        }
     }
     func moveNodeToLocation() {
         if touchingNode == "main" {
-            print("touchingNode",touchingNode)
+            
             // Compute vector components in direction of the touch
             var dx = location.x - main.position.x
             var dy = location.y - main.position.y
@@ -195,8 +216,8 @@ class GameScene: SKScene {
             
             physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0) // no gravity
             
-            enemy.position.y = (self.frame.height / 2) - 80
-            enemy.position.x = (self.frame.width / 4) - 320
+            enemy.position.y = (self.frame.height / 2) - 40
+            enemy.position.x = (self.frame.width / 4) - 390
             main.position.y = (self.frame.height / 2) - 40
             main.position.x = (self.frame.width / 3) - 200
             
@@ -213,7 +234,7 @@ class GameScene: SKScene {
             
             
             
-            print("lower!")
+        
             touched = true
             
         
@@ -278,6 +299,27 @@ class GameScene: SKScene {
                     
                 } else if name == "finish" {
                     touchingNode = ""
+                    let vector =  CGVector(dx: 0, dy: -1)
+                    
+                    //
+                    if touched {
+
+                        //self.physicsWorld.gravity = vector
+                        physicsWorld.gravity = CGVector(dx: 0, dy: -3.8)
+                        //ball.physicsBody!.affectedByGravity = true
+
+                        ball.physicsBody?.affectedByGravity = true
+                        main.physicsBody?.affectedByGravity = true
+                        enemy.physicsBody?.affectedByGravity = true
+
+                        ball.physicsBody?.pinned = false
+                        main.physicsBody?.pinned = false
+                        enemy.physicsBody?.pinned = false
+
+                        
+
+                        touched = false
+                    }
    
                 } else if name == "stop" {
                     resetBlocks()
