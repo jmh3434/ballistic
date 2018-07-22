@@ -16,17 +16,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 //    let ballCategory:UInt32   = 0x00000001
 //    let goalCategory:UInt32 = 0x00000002
     
-    let enemyCategory:UInt32  = 0x00000003
+    
     let plank1Category:UInt32 = 0x00000004
     let plank2Category:UInt32 = 0x00000005
     let mainCategory:UInt32   = 0x00000006
+    let enemyCategory:UInt32  = 0x00000007
     
     
     
     var location = CGPoint.zero
     
     var touchedSprite:Bool = false
-    
+    var gameIsBeingPlayed = false
     //
     
     var ball = SKSpriteNode()
@@ -37,6 +38,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var finish = SKSpriteNode()
     var stop = SKSpriteNode()
     var goal = SKSpriteNode()
+    var turn = SKSpriteNode()
+    var turn2 = SKSpriteNode()
     
     let winner = SKLabelNode()
     
@@ -52,11 +55,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var theRotation:CGFloat = 0
     var offset:CGFloat = 0
     
+    let swipeUpRec = UISwipeGestureRecognizer()
+    let swipeDownRec = UISwipeGestureRecognizer()
+    
     
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
+        
+        
+        // rotation
+        
 
-
+        
         winner.fontSize = 65
         winner.fontColor = SKColor.green
         winner.position = CGPoint(x: frame.midX, y: frame.midY)
@@ -64,11 +74,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(winner)
         
         self.view?.isMultipleTouchEnabled = false
-        createSprites()
-        setGravity()
+        
         //rotate
-        rotateRec.addTarget(self, action: #selector(GameScene.rotatedView(_:)))
-        self.view!.addGestureRecognizer(rotateRec)
+        //rotateRec.addTarget(self, action: #selector(GameScene.rotatedView(_:)))
+        //self.view!.addGestureRecognizer(rotateRec)
         
         let vector =  CGVector(dx: 0, dy: 0)
         //
@@ -95,6 +104,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         finish = self.childNode(withName: "finish") as! SKSpriteNode
         stop = self.childNode(withName: "stop") as! SKSpriteNode
         goal = self.childNode(withName: "goal") as! SKSpriteNode
+        turn = self.childNode(withName: "turn") as! SKSpriteNode
+        turn2 = self.childNode(withName: "turn2") as! SKSpriteNode
+
         
         
         
@@ -105,40 +117,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
        // self.physicsBody = border
         
-        startGame()
+        score = [0,0]
+        
+        main.zRotation = 0
         //bitmasks
-        main.physicsBody?.categoryBitMask = mainCategory
-        enemy.physicsBody?.categoryBitMask = enemyCategory
-        plank1.physicsBody?.categoryBitMask = plank1Category
-        plank2.physicsBody?.categoryBitMask = plank2Category
-        
-        
-        ball.physicsBody?.collisionBitMask = mainCategory
-        ball.physicsBody?.collisionBitMask = enemyCategory
-        ball.physicsBody?.collisionBitMask = plank1Category
-        ball.physicsBody?.collisionBitMask = plank2Category
-        
-        
-        main.physicsBody?.collisionBitMask = plank1Category
-        enemy.physicsBody?.collisionBitMask = plank2Category
-        
-        //physicsBody?.contactTestBitMask = goalCategory
-  
         
         
         
-        let mask1 = 0x000000FF
-        let mask2 = 0x000000F0
         
-        let result = mask1 & mask2 // result = 0x000000F0
-        
-        
-        //
     }
-    
    
     //rotate
-    
+    /*
     @objc func rotatedView(_ sender:UIRotationGestureRecognizer){
         touchedSprite = false
         
@@ -163,8 +153,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             self.offset = theRotation * -1
         }
     }
+    */
     //
     override func update(_ currentTime: TimeInterval) {
+        turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
+        turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
     
     if (touchedSprite) {
         moveNodeToLocation()
@@ -180,11 +173,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let contactA:SKPhysicsBody = contact.bodyA
         let contactB:SKPhysicsBody = contact.bodyB
         
-        if contactA.categoryBitMask == 2 || contactB.categoryBitMask == 2 {
+        if contactA.categoryBitMask == 2 && contactB.node?.name == "ball" {
             self.winner.text = "You Win!"
         }
     }
     func moveNodeToLocation() {
+        
         if touchingNode == "main" {
             var dx = location.x - main.position.x
             var dy = location.y - main.position.y
@@ -210,6 +204,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     }
     func resetBlocks() {
+            main.physicsBody?.isDynamic = false
+            enemy.physicsBody?.isDynamic = false
+            ball.physicsBody?.isDynamic = false
+        
+        
+            gameIsBeingPlayed = false
             self.winner.text = ""
 
             ball.physicsBody?.affectedByGravity = false
@@ -233,6 +233,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             enemy.physicsBody?.angularVelocity = 0
             main.zRotation = 0
             enemy.zRotation = 0
+        
             
             
             
@@ -249,9 +250,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
     
     func startGame() {
-        score = [0,0]
+        main.physicsBody?.categoryBitMask = mainCategory
+        enemy.physicsBody?.categoryBitMask = enemyCategory
+        plank1.physicsBody?.categoryBitMask = plank1Category
+        plank2.physicsBody?.categoryBitMask = plank2Category
         
-         main.zRotation = 0
+        
+        ball.physicsBody?.collisionBitMask = mainCategory
+        ball.physicsBody?.collisionBitMask = enemyCategory
+        ball.physicsBody?.collisionBitMask = plank1Category
+        ball.physicsBody?.collisionBitMask = plank2Category
+        
+        
+        main.physicsBody?.collisionBitMask = plank1Category
+        enemy.physicsBody?.collisionBitMask = plank2Category
+        
+        main.physicsBody?.collisionBitMask = plank2Category
+        enemy.physicsBody?.collisionBitMask = plank1Category
+        
         //ball.physicsBody?.applyImpulse(CGVector(dx: 10 , dy: 10))
         
     }
@@ -267,6 +283,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         for touch in touches {
             
             
+            
             let positionInScene = touch.location(in: self)
             let touchedNode = self.atPoint(positionInScene)
             
@@ -279,9 +296,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     touchingNode = "enemy"
                     
                 } else if name == "finish" {
+                    startGame()
+                    main.physicsBody?.isDynamic = true
+                    enemy.physicsBody?.isDynamic = true
+                    ball.physicsBody?.isDynamic = true
+                    
+                    gameIsBeingPlayed = true
                     touchingNode = ""
                     if touched {
-                        physicsWorld.gravity = CGVector(dx: 0, dy: -3.8)
+                        
+                        
+                        physicsWorld.gravity = CGVector(dx: 0, dy: -3.0)
                         
 
                         ball.physicsBody?.affectedByGravity = true
@@ -300,6 +325,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 } else if name == "stop" {
                     resetBlocks()
                     touchingNode = ""
+                } else if name == "turn" {
+                    
                 } else {
                     touchingNode = ""
                 }
@@ -308,9 +335,43 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //var james = true
+        
+        if !gameIsBeingPlayed {
         touchedSprite = true
         for touch in touches {
             location = touch.location(in: self)
+            let positionInScene = touch.location(in: self)
+            let touchedNode = self.atPoint(positionInScene)
+            if let name = touchedNode.name {
+                if name == "turn" {
+                    touchingNode = "turn"
+                    
+                    
+                    let angle = atan2(location.x - main.position.x , location.y -
+                        main.position.y)
+                    main.zRotation = -(((angle - CGFloat(Double.pi/2)))*12)
+                
+                    
+                    
+                    
+                }
+                if name == "turn2" {
+                    touchingNode = "turn2"
+                    
+                    
+                    let angle = atan2(location.x - enemy.position.x , location.y -
+                        enemy.position.y)
+                    enemy.zRotation = -(((angle - CGFloat(Double.pi/2)))*12)
+                    
+                    
+                    
+                    
+                }
+                
+            }
+            
+        }
         }
         
 
