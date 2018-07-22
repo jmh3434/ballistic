@@ -345,31 +345,26 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let touchedNode = self.atPoint(positionInScene)
             if let name = touchedNode.name {
                 if name == "turn" {
-                    touchingNode = "turn"
-                    
-                    
+                touchingNode = "turn"
+                }else if name == "turn2" {
+                    touchingNode = "turn2"
+                }
+            }
+            
+
+                if touchingNode == "turn" {
                     let angle = atan2(location.x - main.position.x , location.y -
                         main.position.y)
-                    main.zRotation = -(((angle - CGFloat(Double.pi/2)))*12)
-                
-                    
-                    
-                    
-                }
-                if name == "turn2" {
-                    touchingNode = "turn2"
-                    
-                    
+                    main.zRotation = -((angle - CGFloat((Double.pi/2))))
+                }else if touchingNode == "turn2" {
                     let angle = atan2(location.x - enemy.position.x , location.y -
                         enemy.position.y)
-                    enemy.zRotation = -(((angle - CGFloat(Double.pi/2)))*12)
-                    
-                    
-                    
-                    
+                    enemy.zRotation = -((angle - CGFloat((Double.pi/2))))
                 }
                 
-            }
+            
+            
+           
             
         }
         }
