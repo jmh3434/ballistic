@@ -22,12 +22,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let mainCategory:UInt32   = 0x00000006
     let enemyCategory:UInt32  = 0x00000007
     
+    var lastTouchedNode = ""
+    
     
     
     var location = CGPoint.zero
     
     var touchedSprite:Bool = false
     var gameIsBeingPlayed = false
+    var turnPressed = false
+    var turn2Pressed = false
     //
     
     var ball = SKSpriteNode()
@@ -62,6 +66,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         
+        turn.isHidden = true
+        turn2.isHidden = true
         
         // rotation
         
@@ -165,6 +171,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
      if ball.position.y <= -160 {
         resetBlocks()
      }
+        if lastTouchedNode == "main" {
+            turn.isHidden = false
+        }else{
+            turn.isHidden = true
+        }
+        if lastTouchedNode == "enemy" {
+            turn2.isHidden = false
+        }else{
+            turn2.isHidden = true
+        }
     
         
 
@@ -180,6 +196,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     func moveNodeToLocation() {
         
         if touchingNode == "main" {
+           
+            
+            
             var dx = location.x - main.position.x
             var dy = location.y - main.position.y
             // How fast to move the node. Adjust this as needed
@@ -190,6 +209,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             main.position = CGPoint(x:main.position.x+dx, y:main.position.y+dy)
         
         }else if touchingNode == "enemy" {
+            
+            
             // Compute vector components in direction of the touch
             var dx = location.x - enemy.position.x
             var dy = location.y - enemy.position.y
@@ -204,6 +225,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     }
     func resetBlocks() {
+            turn.isHidden = true
+            turn2.isHidden = true
+            lastTouchedNode = ""
             main.physicsBody?.isDynamic = false
             enemy.physicsBody?.isDynamic = false
             ball.physicsBody?.isDynamic = false
@@ -290,10 +314,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             if let name = touchedNode.name
             {
                 if name == "main" {
+                    
                     touchingNode = "main"
+                     lastTouchedNode = "main"
                     
                 } else if name == "enemy" {
                     touchingNode = "enemy"
+                     lastTouchedNode = "enemy"
                     
                 } else if name == "finish" {
                     startGame()
@@ -303,6 +330,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     
                     gameIsBeingPlayed = true
                     touchingNode = ""
+                     lastTouchedNode = "finish"
                     if touched {
                         
                         
@@ -325,6 +353,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 } else if name == "stop" {
                     resetBlocks()
                     touchingNode = ""
+                     lastTouchedNode == "stop"
                 } else if name == "turn" {
                     
                 } else {
@@ -345,18 +374,22 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let touchedNode = self.atPoint(positionInScene)
             if let name = touchedNode.name {
                 if name == "turn" {
+                
                 touchingNode = "turn"
                 }else if name == "turn2" {
+                    
                     touchingNode = "turn2"
                 }
             }
             
 
                 if touchingNode == "turn" {
+                    
                     let angle = atan2(location.x - main.position.x , location.y -
                         main.position.y)
                     main.zRotation = -((angle - CGFloat((Double.pi/2))))
                 }else if touchingNode == "turn2" {
+                    
                     let angle = atan2(location.x - enemy.position.x , location.y -
                         enemy.position.y)
                     enemy.zRotation = -((angle - CGFloat((Double.pi/2))))
