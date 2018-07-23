@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene,SKPhysicsContactDelegate {
+class GameScene2: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
     //bitmasks
     
@@ -21,8 +21,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let plank2Category:UInt32 = 0x00000005
     let mainCategory:UInt32   = 0x00000006
     let enemyCategory:UInt32  = 0x00000007
-     var skView: SKView!
-    var menuScene: MenuScene!
     
     var lastTouchedNode = ""
     
@@ -66,8 +64,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     
     override func didMove(to view: SKView) {
-    
-        
         self.physicsWorld.contactDelegate = self
         
         turn.isHidden = true
@@ -194,7 +190,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let contactB:SKPhysicsBody = contact.bodyB
         
         if contactA.categoryBitMask == 2 && contactB.node?.name == "ball" {
-            self.winner.text = "You Win!"
+            self.winner.text = "You Lose!"
         }
     }
     func moveNodeToLocation() {
@@ -355,10 +351,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     }
    
                 } else if name == "stop" {
-             
                     resetBlocks()
                     touchingNode = ""
-                     lastTouchedNode = "stop"
+                     lastTouchedNode == "stop"
                 } else if name == "turn" {
                     
                 } else {

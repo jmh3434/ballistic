@@ -1,15 +1,15 @@
 import SpriteKit
 
 class MenuScene: SKScene {
-    
+     var skView: SKView!
     var playButton = SKSpriteNode()
-    let playButtonTex = SKTexture(imageNamed: "play")
+   
     
     override func didMove(to view: SKView) {
+        playButton = self.childNode(withName: "play") as! SKSpriteNode
         
-        playButton = SKSpriteNode(texture: playButtonTex)
         playButton.position = CGPoint(x: frame.midX, y: frame.midY)
-        self.addChild(playButton)
+            
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -18,11 +18,16 @@ class MenuScene: SKScene {
             let node = self.atPoint(pos)
             
             if node == playButton {
-                if let view = view {
-                    let transition:SKTransition = SKTransition.fade(withDuration: 1)
-                    let scene:SKScene = GameScene(size: self.size)
-                    self.view?.presentScene(scene, transition: transition)
-                }
+                
+//                    let transition:SKTransition = SKTransition.fade(withDuration: 1)
+//                    let scene:SKScene = GameScene(size: self.size)
+//                    self.view?.presentScene(scene, transition: transition)
+                
+                let reveal = SKTransition.reveal(with: .down,
+                                                 duration: 1)
+                let newScene = GameScene(size: CGSize(width: 1024, height: 768))
+                
+                self.view?.presentScene(newScene, transition: reveal)
             }
         }
     }

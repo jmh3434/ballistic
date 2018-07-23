@@ -1,9 +1,9 @@
 //
 //  GameViewController.swift
-//  ballistic
+//  Pong2
 //
-//  Created by James Hunt on 7/10/18.
-//  Copyright © 2018 James Hunt. All rights reserved.
+//  Created by Jared Davidson on 10/11/16.
+//  Copyright © 2016 Archetapp. All rights reserved.
 //
 
 import UIKit
@@ -11,7 +11,7 @@ import SpriteKit
 import GameplayKit
 
 
-var currentGameType = gameType.medium
+var currentGameType = gameLevel.one
 
 
 class GameViewController: UIViewController {
@@ -21,15 +21,31 @@ class GameViewController: UIViewController {
         
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
-            if let scene = SKScene(fileNamed: "GameScene") {
+            print("current game type: ", currentGameType)
+            
+            if currentGameType == .one {
+               let scene = SKScene(fileNamed: "GameScene")
                 // Set the scale mode to scale to fit the window
-                scene.scaleMode = .aspectFill
+                scene?.scaleMode = .aspectFill
                 
-                scene.size = view.bounds.size
+                scene?.size = view.bounds.size
+                
+                // Present the scene
+                view.presentScene(scene)
+            }else if currentGameType == .two {
+                let scene = SKScene(fileNamed: "GameScene2")
+                // Set the scale mode to scale to fit the window
+                scene?.scaleMode = .aspectFill
+                
+                scene?.size = view.bounds.size
                 
                 // Present the scene
                 view.presentScene(scene)
             }
+            
+            
+            
+            
             
             view.ignoresSiblingOrder = true
             

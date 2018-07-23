@@ -9,32 +9,32 @@
 import Foundation
 import UIKit
 
-enum gameType {
-    case easy
-    case medium
-    case hard
-    case player2
+enum gameLevel {
+    case one
+    case two
+    case three
+    case four
 }
 
 class MenuVC : UIViewController {
     
     
-    @IBAction func Player2(_ sender: Any) {
-        moveToGame(game: .player2)
+    @IBAction func one(_ sender: Any) {
+        moveToGame(game: .one)
     }
     
-    @IBAction func Easy(_ sender: Any) {
-        moveToGame(game: .easy)
+    @IBAction func two(_ sender: Any) {
+        moveToGame(game: .two)
     }
-    @IBAction func Medium(_ sender: Any) {
-        moveToGame(game: .medium)
+    @IBAction func three(_ sender: Any) {
+        moveToGame(game: .three)
         
     }
-    @IBAction func Hard(_ sender: Any) {
-        moveToGame(game: .hard)
+    @IBAction func four(_ sender: Any) {
+        moveToGame(game: .four)
     }
     
-    func moveToGame(game : gameType) {
+    func moveToGame(game : gameLevel) {
         let gameVC = self.storyboard?.instantiateViewController(withIdentifier: "gameVC") as! GameViewController
         
         currentGameType = game
