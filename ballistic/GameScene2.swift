@@ -44,6 +44,7 @@ class GameScene2: SKScene,SKPhysicsContactDelegate {
     var goal = SKSpriteNode()
     var turn = SKSpriteNode()
     var turn2 = SKSpriteNode()
+    var back = SKSpriteNode()
     
     let winner = SKLabelNode()
     
@@ -113,6 +114,7 @@ class GameScene2: SKScene,SKPhysicsContactDelegate {
         goal = self.childNode(withName: "goal") as! SKSpriteNode
         turn = self.childNode(withName: "turn") as! SKSpriteNode
         turn2 = self.childNode(withName: "turn2") as! SKSpriteNode
+        back = self.childNode(withName: "back") as! SKSpriteNode
 
         
         
@@ -357,7 +359,47 @@ class GameScene2: SKScene,SKPhysicsContactDelegate {
                      lastTouchedNode == "stop"
                 } else if name == "turn" {
                     
-                } else {
+                } else if name == "back" {
+                    
+                    
+                    
+                    // let currentViewController:UIViewController=UIApplication.shared.keyWindow!.rootViewController!
+                    ////let vc = GameViewController()
+                    // currentViewController.present(vc, animated: true, completion: nil)
+                    
+                    //self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
+                    
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    
+                    let vc = storyboard.instantiateViewController(withIdentifier: "levels")
+                    
+                    vc.view.frame = (self.view?.frame)!
+                    
+                    vc.view.layoutIfNeeded()
+                    
+                    
+                    
+                    UIView.transition(with: self.view!, duration: 0.3, options: .transitionFlipFromRight, animations:
+                        
+                        {
+                            
+                            self.view?.window?.rootViewController = vc
+                            
+                    }, completion: { completed in
+                        
+                        
+                        
+                    })
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                }else {
                     touchingNode = ""
                 }
                 
