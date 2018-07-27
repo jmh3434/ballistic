@@ -37,41 +37,60 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1R-P4-jLl">
-                                <rect key="frame" x="381" y="103" width="49" height="30"/>
+                                <rect key="frame" x="381" y="141" width="49" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Level 2"/>
+                                <state key="normal" title="Level 2">
+                                    <color key="titleColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="two:" destination="j5z-9e-ade" eventType="touchUpInside" id="fci-4u-xyD"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WoL-IO-QqM">
-                                <rect key="frame" x="381" y="141" width="49" height="30"/>
+                                <rect key="frame" x="381" y="179" width="49" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Level 3"/>
+                                <state key="normal" title="Level 3">
+                                    <color key="titleColor" red="0.32369780539999998" green="0.1063579395" blue="0.574860394" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="three:" destination="j5z-9e-ade" eventType="touchUpInside" id="Jk7-fS-r9C"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i4W-1l-rvt">
-                                <rect key="frame" x="382" y="51" width="47" height="30"/>
+                                <rect key="frame" x="383" y="103" width="47" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Level 1"/>
                                 <connections>
                                     <action selector="one:" destination="j5z-9e-ade" eventType="touchUpInside" id="6Bm-fq-0yX"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LjC-LK-Tsx">
-                                <rect key="frame" x="381" y="194" width="50" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="BALLISTIC" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bgF-2y-41f">
+                                <rect key="frame" x="365" y="66" width="82" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Level 4"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LjC-LK-Tsx">
+                                <rect key="frame" x="381" y="217" width="50" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Level 4">
+                                    <color key="titleColor" red="0.078545770971827092" green="0.035911383287088199" blue="0.15172906091370564" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="four:" destination="j5z-9e-ade" eventType="touchUpInside" id="5zg-pa-SIY"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.38427982233502533" green="0.38427982233502533" blue="0.38427982233502533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="nDl-Wn-v9A"/>
+                    <connections>
+                        <outlet property="level1" destination="i4W-1l-rvt" id="Kwx-KR-GhE"/>
+                        <outlet property="level2" destination="l1R-P4-jLl" id="kOB-j5-Did"/>
+                        <outlet property="level3" destination="WoL-IO-QqM" id="Ehx-cG-2fy"/>
+                        <outlet property="level4" destination="LjC-LK-Tsx" id="kGz-eg-TcT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ghw-mJ-T5F" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -206,6 +206,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         if contactA.categoryBitMask == 2 && contactB.node?.name == "ball" {
             self.winner.text = "You Win!"
+            level1conquered = true
         }
     }
     func moveNodeToLocation() {

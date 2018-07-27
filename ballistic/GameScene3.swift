@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene2: SKScene,SKPhysicsContactDelegate {
+class GameScene3: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
     //bitmasks
     
@@ -194,7 +194,7 @@ class GameScene2: SKScene,SKPhysicsContactDelegate {
         
         if contactA.categoryBitMask == 2 && contactB.node?.name == "ball" {
             self.winner.text = "You Win!"
-            level2conquered = true
+            level3conquered = true
         }
     }
     func moveNodeToLocation() {

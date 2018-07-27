@@ -24,30 +24,36 @@ class GameViewController: UIViewController {
         let view = self.view as! SKView?
             // Load the SKScene from 'GameScene.sks'
             print("current game type: ", currentGameType)
-            
-            if currentGameType == .one {
-            
-            let scene = SKScene(fileNamed: "GameScene")
+        var scene = SKScene()
+        
+        
+        switch currentGameType {
+        case .one:
+            scene = SKScene(fileNamed: "GameScene")!
+            break
+        case .two:
+            scene = SKScene(fileNamed: "GameScene2")!
+            break
+        case .three:
+            scene = SKScene(fileNamed: "GameScene3")!
+            break
+        case .four:
+            scene = SKScene(fileNamed: "GameScene4")!
+            break
+        default:
+            scene = SKScene(fileNamed: "GameScene")!
+        }
+        
                 // Set the scale mode to scale to fit the window
-            scene?.scaleMode = .aspectFill
+        scene.scaleMode = .aspectFill
                 
-            scene?.size = view!.bounds.size
+        scene.size = view!.bounds.size
                 
             
-            print("presenting scene")
+        
                 
-                view!.presentScene(scene)
-            }else if currentGameType == .two {
-                let scene = SKScene(fileNamed: "GameScene2")
-                // Set the scale mode to scale to fit the window
-                scene?.scaleMode = .aspectFill
-
-                scene?.size = view!.bounds.size
-
-                // Present the scene
-                
-                view!.presentScene(scene)
-            }
+            view!.presentScene(scene)
+        
             
             
             
