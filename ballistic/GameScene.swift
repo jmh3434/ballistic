@@ -8,13 +8,20 @@
 
 import SpriteKit
 import GameplayKit
+protocol GameSceneDelegate {
+    func gameOver()
+}
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
+    var gameSceneDelegate: GameSceneDelegate?
+    
     //bitmasks
     
 //    let ballCategory:UInt32   = 0x00000001
 //    let goalCategory:UInt32 = 0x00000002
+    
+    
     
     
     let plank1Category:UInt32 = 0x00000004
@@ -46,6 +53,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var goal = SKSpriteNode()
     var turn = SKSpriteNode()
     var turn2 = SKSpriteNode()
+    var back = SKSpriteNode()
     
     let winner = SKLabelNode()
     
@@ -54,6 +62,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     var topLbl = SKLabelNode()
     var btmLbl = SKLabelNode()
+    
     
     var score = [Int]()
     //rotate
@@ -66,8 +75,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     
     override func didMove(to view: SKView) {
+       
     
-        
+        print("hello1")
         self.physicsWorld.contactDelegate = self
         
         turn.isHidden = true
@@ -116,6 +126,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         goal = self.childNode(withName: "goal") as! SKSpriteNode
         turn = self.childNode(withName: "turn") as! SKSpriteNode
         turn2 = self.childNode(withName: "turn2") as! SKSpriteNode
+        back = self.childNode(withName: "back") as! SKSpriteNode
 
         
         
@@ -299,7 +310,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         //ball.physicsBody?.applyImpulse(CGVector(dx: 10 , dy: 10))
         
     }
-
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         touchedSprite = true
@@ -361,6 +372,46 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                      lastTouchedNode = "stop"
                 } else if name == "turn" {
                     
+                } else if name == "back" {
+                    
+                    
+                    
+                   // let currentViewController:UIViewController=UIApplication.shared.keyWindow!.rootViewController!
+                    ////let vc = GameViewController()
+                   // currentViewController.present(vc, animated: true, completion: nil)
+                    
+                    //self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
+                    
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    
+                    let vc = storyboard.instantiateViewController(withIdentifier: "levels")
+                    
+                    vc.view.frame = (self.view?.frame)!
+                    
+                    vc.view.layoutIfNeeded()
+                    
+                    
+                    
+                    UIView.transition(with: self.view!, duration: 0.3, options: .transitionFlipFromRight, animations:
+                        
+                        {
+                            
+                            self.view?.window?.rootViewController = vc
+                            
+                    }, completion: { completed in
+                        
+                        
+                        
+                    })
+                    
+                    
+                    
+                
+
+
+
+
+                  
                 } else {
                     touchingNode = ""
                 }
@@ -368,6 +419,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
         }
     }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //var james = true
         

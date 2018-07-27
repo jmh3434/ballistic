@@ -20,6 +20,7 @@ class MenuVC : UIViewController {
     
     
     @IBAction func one(_ sender: Any) {
+        print("11")
         moveToGame(game: .one)
     }
     
@@ -39,6 +40,9 @@ class MenuVC : UIViewController {
         
         currentGameType = game
         
-        self.navigationController?.pushViewController(gameVC, animated: true)
+        //self.navigationController?.pushViewController(gameVC, animated: true)
+        self.present(gameVC, animated: true, completion: nil)
+        
+        print("12")
     }
 }

@@ -68,6 +68,7 @@ class GameScene2: SKScene,SKPhysicsContactDelegate {
         
         turn.isHidden = true
         turn2.isHidden = true
+        print("hello2")
         
         // rotation
         

@@ -16,43 +16,50 @@ var currentGameType = gameLevel.one
 
 class GameViewController: UIViewController {
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let view = self.view as! SKView? {
+        let view = self.view as! SKView?
             // Load the SKScene from 'GameScene.sks'
             print("current game type: ", currentGameType)
             
             if currentGameType == .one {
-               let scene = SKScene(fileNamed: "GameScene")
+            
+            let scene = SKScene(fileNamed: "GameScene")
                 // Set the scale mode to scale to fit the window
-                scene?.scaleMode = .aspectFill
+            scene?.scaleMode = .aspectFill
                 
-                scene?.size = view.bounds.size
+            scene?.size = view!.bounds.size
                 
-                // Present the scene
-                view.presentScene(scene)
+            
+            print("presenting scene")
+                
+                view!.presentScene(scene)
             }else if currentGameType == .two {
                 let scene = SKScene(fileNamed: "GameScene2")
                 // Set the scale mode to scale to fit the window
                 scene?.scaleMode = .aspectFill
-                
-                scene?.size = view.bounds.size
-                
+
+                scene?.size = view!.bounds.size
+
                 // Present the scene
-                view.presentScene(scene)
+                
+                view!.presentScene(scene)
             }
             
             
             
             
             
-            view.ignoresSiblingOrder = true
+            view!.ignoresSiblingOrder = true
             
-            view.showsFPS = true
-            view.showsNodeCount = true
+            view!.showsFPS = true
+            view!.showsNodeCount = false
         }
-    }
+    
+    
     
     override var shouldAutorotate: Bool {
         return true
