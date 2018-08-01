@@ -328,8 +328,8 @@ class GameScene4: SKScene,SKPhysicsContactDelegate {
                     
                 } else if name == "finish" {
                     startGame()
-                    main.physicsBody?.isDynamic = true
-                    enemy.physicsBody?.isDynamic = true
+                    //main.physicsBody?.isDynamic = true
+                    //enemy.physicsBody?.isDynamic = true
                     ball.physicsBody?.isDynamic = true
                     
                     gameIsBeingPlayed = true

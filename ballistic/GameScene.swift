@@ -7,7 +7,12 @@
 //
 
 import SpriteKit
+import Foundation
 import GameplayKit
+import Darwin
+import UIKit
+
+
 protocol GameSceneDelegate {
     func gameOver()
 }
@@ -76,7 +81,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
        
-    
+        
+        
+        
+        
         print("hello1")
         self.physicsWorld.contactDelegate = self
         
@@ -142,7 +150,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         main.zRotation = 0
         //bitmasks
-        
+        turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
         
         
         
@@ -177,7 +185,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     */
     //
     override func update(_ currentTime: TimeInterval) {
-        turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
+       // turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
         turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
     
     if (touchedSprite) {
@@ -222,7 +230,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             // Scale vector
             dx = dx * speed
             dy = dy * speed
+            
             main.position = CGPoint(x:main.position.x+dx, y:main.position.y+dy)
+            
+            turn.position = CGPoint(x:turn.position.x+dx, y:turn.position.y+dy)
+            //turn.position = CGPoint(x: main.position.x+120, y: main.position.y)
         
         }else if touchingNode == "enemy" {
             
@@ -241,6 +253,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     }
     func resetBlocks() {
+        
             turn.isHidden = true
             turn2.isHidden = true
             lastTouchedNode = ""
@@ -279,7 +292,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
         
             touched = true
-            
+            turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
+            turn.zRotation = -3.907
         
     }
     func CGVectorMake(point1:CGFloat,point2:CGFloat) -> CGVector{
@@ -420,10 +434,19 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
         }
     }
+    var anglep = CGFloat()
+    var once = true
+    
+    var oldLocationX = CGFloat()
+    var oldLocationY = CGFloat()
+    var angle = CGFloat()
+    var oldZ = CGFloat()
+    
+    
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //var james = true
-        
+       
         if !gameIsBeingPlayed {
         touchedSprite = true
         for touch in touches {
@@ -442,11 +465,62 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
 
                 if touchingNode == "turn" {
+        
                     
                     let angle = atan2(location.x - main.position.x , location.y -
                         main.position.y)
+                    
+                    
+                    
                     main.zRotation = -((angle - CGFloat((Double.pi/2))))
+                    
+            
+                    
+//                    if main.zRotation > 0 &&  main.zRotation < 1.57079632679 {
+//                         turn.position = CGPoint(x:main.frame.maxX+20, y:main.frame.maxY)
+//                    }else if main.zRotation < 0 && main.zRotation > -1.57079632679{
+//                        turn.position = CGPoint(x:main.frame.maxX+20, y:main.frame.minY)
+//                    }else if main.zRotation < 3.14 &&  main.zRotation > 1.57079632679{
+//                         turn.position = CGPoint(x:main.frame.minX, y:main.frame.maxY+20)
+//                    }else {
+//                        turn.position = CGPoint(x:main.frame.minX, y:main.frame.minY-20)
+//                    }
+                    
+                    //turn.position =
+                    var sinus = (sinf(Float(main.zRotation))*125)
+                    var cosin = (cosf(Float(main.zRotation))*125)
+                    
+                    var sine = main.frame.midY + CGFloat(sinus)
+                    var cosine = main.frame.midX + CGFloat(cosin)
+                    
+                    
+                    
+
+                    turn.position = CGPoint(x: cosine, y: sine)
+                    
+                    
+                    
+                    turn.zRotation = -0.71-((angle + CGFloat((Double.pi/2))))
+                    print(-((angle + CGFloat((Double.pi/2)))))
+                    print(turn.zRotation)
+                    
+                    
+                    
+                    
+                    
+                    
+               
+                 
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }else if touchingNode == "turn2" {
+                    
                     
                     let angle = atan2(location.x - enemy.position.x , location.y -
                         enemy.position.y)
