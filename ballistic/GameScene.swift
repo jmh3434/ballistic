@@ -20,14 +20,7 @@ protocol GameSceneDelegate {
 class GameScene: SKScene,SKPhysicsContactDelegate {
     private let kAnimalNodeName = "movable"
     var gameSceneDelegate: GameSceneDelegate?
-    
-    //bitmasks
-    
-//    let ballCategory:UInt32   = 0x00000001
-//    let goalCategory:UInt32 = 0x00000002
-    
-    
-    
+
     
     let plank1Category:UInt32 = 0x00000004
     let plank2Category:UInt32 = 0x00000005
@@ -139,7 +132,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         
         
-        let border  = SKPhysicsBody(edgeLoopFrom: self.frame)
+       // let border  = SKPhysicsBody(edgeLoopFrom: self.frame)
         
        // border.friction = 0
        // border.restitution = 1
@@ -151,42 +144,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         main.zRotation = 0
         //bitmasks
         turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
+        turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
         
         
         
     }
-   
-    //rotate
-    /*
-    @objc func rotatedView(_ sender:UIRotationGestureRecognizer){
-        touchedSprite = false
-        
-        
-        if (sender.state == .began){
-            
-        }
-        if (sender.state == .changed){
-            
-            theRotation = CGFloat(sender.rotation) + self.offset
-            theRotation = theRotation * -1
-            if touchingNode == "main" {
-                main.zRotation = theRotation
-            }else if touchingNode == "enemy" {
-                enemy.zRotation = theRotation
-            }
-
-
-        }
-        if (sender.state == .ended){
-            
-            self.offset = theRotation * -1
-        }
-    }
-    */
-    //
     override func update(_ currentTime: TimeInterval) {
        // turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
-        turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
+        //turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
     
     if (touchedSprite) {
         moveNodeToLocation()
@@ -234,7 +199,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             main.position = CGPoint(x:main.position.x+dx, y:main.position.y+dy)
             
             turn.position = CGPoint(x:turn.position.x+dx, y:turn.position.y+dy)
-            //turn.position = CGPoint(x: main.position.x+120, y: main.position.y)
+            
         
         }else if touchingNode == "enemy" {
             
@@ -248,6 +213,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             dx = dx * speed
             dy = dy * speed
             enemy.position = CGPoint(x:enemy.position.x+dx, y:enemy.position.y+dy)
+            turn2.position = CGPoint(x:turn2.position.x+dx, y:turn2.position.y+dy)
         }
         
         
@@ -295,9 +261,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
             turn.zRotation = -3.907
         
+            turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
+            turn2.zRotation = -3.907
+        
     }
     func CGVectorMake(point1:CGFloat,point2:CGFloat) -> CGVector{
-        var newPoint1 = CGVector(dx:point1,dy:point2)
+        let newPoint1 = CGVector(dx:point1,dy:point2)
         
         return (newPoint1)
     }
@@ -322,7 +291,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         main.physicsBody?.collisionBitMask = plank2Category
         enemy.physicsBody?.collisionBitMask = plank1Category
         
-        //ball.physicsBody?.applyImpulse(CGVector(dx: 10 , dy: 10))
         
     }
     
@@ -384,18 +352,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
              
                     resetBlocks()
                     touchingNode = ""
-                     lastTouchedNode = "stop"
+                    lastTouchedNode = "stop"
                 } else if name == "turn" {
                     
                 } else if name == "back" {
-                    
-                    
-                    
-                   // let currentViewController:UIViewController=UIApplication.shared.keyWindow!.rootViewController!
-                    ////let vc = GameViewController()
-                   // currentViewController.present(vc, animated: true, completion: nil)
-                    
-                    //self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
                     
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     
@@ -434,15 +394,36 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
         }
     }
-    var anglep = CGFloat()
-    var once = true
-    
-    var oldLocationX = CGFloat()
-    var oldLocationY = CGFloat()
-    var angle = CGFloat()
-    var oldZ = CGFloat()
     
     
+    func turnNode(turningNode:SKNode,rotaterNode:SKNode) {
+        let angle = atan2(location.x - turningNode.position.x , location.y -
+            turningNode.position.y)
+        
+        
+        
+        turningNode.zRotation = -((angle - CGFloat((Double.pi/2))))
+        
+        
+        
+        
+        let sin = (sinf(Float(turningNode.zRotation))*125)
+        let cos = (cosf(Float(turningNode.zRotation))*125)
+        
+        let sine = turningNode.frame.midY + CGFloat(sin)
+        let cosine = turningNode.frame.midX + CGFloat(cos)
+        
+        
+        
+        
+        rotaterNode.position = CGPoint(x: cosine, y: sine)
+        
+        
+        
+        rotaterNode.zRotation = -0.71-((angle + CGFloat((Double.pi/2))))
+        print(-((angle + CGFloat((Double.pi/2)))))
+        
+    }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //var james = true
@@ -465,66 +446,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
 
                 if touchingNode == "turn" {
-        
-                    
-                    let angle = atan2(location.x - main.position.x , location.y -
-                        main.position.y)
-                    
-                    
-                    
-                    main.zRotation = -((angle - CGFloat((Double.pi/2))))
-                    
-            
-                    
-//                    if main.zRotation > 0 &&  main.zRotation < 1.57079632679 {
-//                         turn.position = CGPoint(x:main.frame.maxX+20, y:main.frame.maxY)
-//                    }else if main.zRotation < 0 && main.zRotation > -1.57079632679{
-//                        turn.position = CGPoint(x:main.frame.maxX+20, y:main.frame.minY)
-//                    }else if main.zRotation < 3.14 &&  main.zRotation > 1.57079632679{
-//                         turn.position = CGPoint(x:main.frame.minX, y:main.frame.maxY+20)
-//                    }else {
-//                        turn.position = CGPoint(x:main.frame.minX, y:main.frame.minY-20)
-//                    }
-                    
-                    //turn.position =
-                    var sinus = (sinf(Float(main.zRotation))*125)
-                    var cosin = (cosf(Float(main.zRotation))*125)
-                    
-                    var sine = main.frame.midY + CGFloat(sinus)
-                    var cosine = main.frame.midX + CGFloat(cosin)
-                    
-                    
-                    
-
-                    turn.position = CGPoint(x: cosine, y: sine)
-                    
-                    
-                    
-                    turn.zRotation = -0.71-((angle + CGFloat((Double.pi/2))))
-                    print(-((angle + CGFloat((Double.pi/2)))))
-                    print(turn.zRotation)
-                    
-                    
-                    
-                    
-                    
-                    
-               
-                 
-
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    turnNode(turningNode: main, rotaterNode: turn)
                 }else if touchingNode == "turn2" {
-                    
-                    
-                    let angle = atan2(location.x - enemy.position.x , location.y -
-                        enemy.position.y)
-                    enemy.zRotation = -((angle - CGFloat((Double.pi/2))))
+                    turnNode(turningNode: enemy, rotaterNode: turn2)
                 }
                 
             
@@ -542,6 +466,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
 }
+
 
 
 
