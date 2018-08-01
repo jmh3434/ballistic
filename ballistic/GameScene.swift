@@ -58,6 +58,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var touchingNode = String()
     var touched = true
     
+    
+    var mainNodePosition = CGPoint()
+    var enemyNodePosition = CGPoint()
+    var mainz = CGFloat()
+    var enemyz = CGFloat()
+    
+    var turnNodePosition = CGPoint()
+    var turn2NodePosition = CGPoint()
+    var turnz = CGFloat()
+    var turn2z = CGFloat()
+    
+    
     var topLbl = SKLabelNode()
     var btmLbl = SKLabelNode()
     
@@ -223,6 +235,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             turn.isHidden = true
             turn2.isHidden = true
             lastTouchedNode = ""
+        
             main.physicsBody?.isDynamic = false
             enemy.physicsBody?.isDynamic = false
             ball.physicsBody?.isDynamic = false
@@ -237,11 +250,21 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0) // no gravity
             
-            enemy.position.y = (self.frame.height / 2) - 40
-            enemy.position.x = (self.frame.width / 4) - 390
-            main.position.y = (self.frame.height / 2) - 40
-            main.position.x = (self.frame.width / 3) - 200
-            
+//            enemy.position.y = (self.frame.height / 2) - 40
+//            enemy.position.x = (self.frame.width / 4) - 390
+//            main.position.y = (self.frame.height / 2) - 40
+//            main.position.x = (self.frame.width / 3) - 200
+        
+            main.position = mainNodePosition
+            enemy.position = enemyNodePosition
+            main.zRotation = mainz
+            enemy.zRotation = enemyz
+        
+            turn.position = turnNodePosition
+            turn2.position = turn2NodePosition
+            turn.zRotation = turnz
+            turn2.zRotation = turn2z
+        
             ball.position.y = (self.frame.height / 2) - 80
             ball.position.x = (self.frame.width / 4)
             
@@ -250,19 +273,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             enemy.physicsBody?.velocity = CGVectorMake(point1: 0.0, point2: 0.0)
             main.physicsBody?.angularVelocity = 0
             enemy.physicsBody?.angularVelocity = 0
-            main.zRotation = 0
-            enemy.zRotation = 0
+        
         
             
             
             
         
             touched = true
-            turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
-            turn.zRotation = -3.907
-        
-            turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
-            turn2.zRotation = -3.907
+//            turn.position = CGPoint(x:main.position.x+120, y:main.position.y)
+//            turn.zRotation = -3.907
+//
+//            turn2.position = CGPoint(x:enemy.position.x+120, y:enemy.position.y)
+//            turn2.zRotation = -3.907
         
     }
     func CGVectorMake(point1:CGFloat,point2:CGFloat) -> CGVector{
@@ -311,16 +333,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             if let name = touchedNode.name
             {
-                if name == "main" {
+                if name == "main" && !gameIsBeingPlayed{
                     
                     touchingNode = "main"
                      lastTouchedNode = "main"
                     
-                } else if name == "enemy" {
+                } else if name == "enemy" && !gameIsBeingPlayed{
                     touchingNode = "enemy"
                      lastTouchedNode = "enemy"
                     
-                } else if name == "finish" {
+                } else if name == "finish"{
                     startGame()
                     main.physicsBody?.isDynamic = true
                     enemy.physicsBody?.isDynamic = true
@@ -331,9 +353,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                      lastTouchedNode = "finish"
                     if touched {
                         
+                        captureNodes()
                         
                         physicsWorld.gravity = CGVector(dx: 0, dy: -3.0)
                         
+//                        main.isUserInteractionEnabled = false
+//                        enemy.isUserInteractionEnabled = false
+//                        turn.isUserInteractionEnabled = false
+//                        turn2.isUserInteractionEnabled = false
 
                         ball.physicsBody?.affectedByGravity = true
                         main.physicsBody?.affectedByGravity = true
@@ -395,6 +422,19 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
     }
     
+    func captureNodes(){
+        mainNodePosition = main.position
+        enemyNodePosition = enemy.position
+        
+        mainz = main.zRotation
+        enemyz = enemy.zRotation
+        
+        turnNodePosition = turn.position
+        turn2NodePosition = turn2.position
+        
+        turnz = turn.zRotation
+        turn2z = turn2.zRotation
+    }
     
     func turnNode(turningNode:SKNode,rotaterNode:SKNode) {
         let angle = atan2(location.x - turningNode.position.x , location.y -
